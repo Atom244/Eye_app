@@ -1,50 +1,82 @@
+import customtkinter as CTk
 from plyer import notification
 import time
-
-#NEW FEATURES WILL BE ADDED SOON
-#NEW FEATURES WILL BE ADDED SOON
-#NEW FEATURES WILL BE ADDED SOON
-#NEW FEATURES WILL BE ADDED SOON
-#NEW FEATURES WILL BE ADDED SOON
-#NEW FEATURES WILL BE ADDED SOON
-#NEW FEATURES WILL BE ADDED SOON
+import threading
 
 
-def show_msg():
-    notification.notify(
-        title='fdsfdf',
-        message='fopdpfdjfdopf',
-        app_icon=None,
-    )
+
+class App(CTk.CTk):
+    def __init__(self):
+        super(App, self).__init__()
+
+        self.geometry("350x270")
+        self.title("Eye timer")
+        self.resizable(False, False)
+
+        self.timer_running = True  # Сделать timer_running атрибутом класса
 
 
-def timer():
-    time.sleep(prefer_time)########################################
-    show_msg()
-    timer()
+        global prefer_time
+        prefer_time = 20
 
-def start_time():
-    global prefer_time
-    try:
-        prefer_time = int(input("time for notification (minutes): "))
-        if prefer_time < 1:
-            print("no no no")
-            start_time()
-    except:
-        if ValueError:
-            start_time()
 
-def start_yn():
-    try:
-        start_btn = input('start?(y/n): ')
-        if start_btn == 'y':
-            timer()
-        else:
-            start_yn()
-    except:
-        if ValueError:
-            start_yn()
+        def m5():
+            global prefer_time
+            prefer_time = 5
 
-start_time()
-start_yn()
+        def m10():
+            global prefer_time
+            prefer_time = 10
+        def m15():
+            global prefer_time
+            prefer_time = 15
+        def m20():
+            global prefer_time
+            prefer_time = 20
+
+
+        def show_msg():
+            notification.notify(
+                title='Notification Title',
+                message='Notification Message',
+                app_icon=None,
+            )
+
+        def timer():
+            while self.timer_running:  # Использовать self.timer_running для проверки состояния
+                time.sleep(prefer_time*60)
+                print('time')
+                show_msg()
+
+        def stop_timer():
+            self.timer_running = False  # Изменить self.timer_running для остановки таймера
+            self.btn_start.configure(state='normal')
+            self.btn_stop.configure(state='disabled')
+
+        def start():
+            self.timer_running = True  # Убедиться, что timer_running истинно перед запуском таймера
+            print('started')
+            self.btn_start.configure(state='disabled')
+            self.btn_stop.configure(state='normal')
+            self.x = threading.Thread(target=timer)
+            self.x.start()
+
+        radio_var = CTk.IntVar(value=0)
+        self.radio_5m = CTk.CTkRadioButton(self, text='5 min', value=1, variable=radio_var, command=m5)
+        self.radio_5m.grid(row=1, column=0, padx=20, pady=20)
+        self.radio_10m = CTk.CTkRadioButton(self, text='10 min', value=2, variable=radio_var, command=m10)
+        self.radio_10m.grid(row=2, column=0, padx=20, pady=20)
+        self.radio_15m = CTk.CTkRadioButton(self, text='15 min', value=3, variable=radio_var, command=m15)
+        self.radio_15m.grid(row=3, column=0, padx=20, pady=20)
+        self.radio_20m = CTk.CTkRadioButton(self, text='20 min', value=4, variable=radio_var, command=m20)
+        self.radio_20m.grid(row=4, column=0, padx=20, pady=20)
+
+        self.btn_start = CTk.CTkButton(self, text='Start', command=start)
+        self.btn_start.grid(row=2, column=1, padx=20, pady=20)
+        self.btn_stop = CTk.CTkButton(self, text='Stop', command=stop_timer, state='disabled')
+        self.btn_stop.grid(row=3, column=1, padx=20, pady=20)
+
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
 
