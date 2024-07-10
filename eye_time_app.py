@@ -9,9 +9,10 @@ class App(CTk.CTk):
     def __init__(self):
         super(App, self).__init__()
 
-        self.geometry("350x270")
+        self.geometry("320x260")
         self.title("Eye timer")
         self.resizable(False, False)
+        self.wm_iconbitmap('eye1.ico')
 
         self.timer_running = True  # Сделать timer_running атрибутом класса
 
@@ -37,24 +38,24 @@ class App(CTk.CTk):
 
         def show_msg():
             notification.notify(
-                title='Notification Title',
-                message='Notification Message',
-                app_icon=None,
+                title=f'{prefer_time} minutes have already passed',
+                message='Relax your eyes',
+                app_icon='eye1.ico',
             )
 
         def timer():
-            while self.timer_running:  # Использовать self.timer_running для проверки состояния
+            while self.timer_running:
                 time.sleep(prefer_time*60)
                 print('time')
                 show_msg()
 
         def stop_timer():
-            self.timer_running = False  # Изменить self.timer_running для остановки таймера
+            self.timer_running = False
             self.btn_start.configure(state='normal')
             self.btn_stop.configure(state='disabled')
 
         def start():
-            self.timer_running = True  # Убедиться, что timer_running истинно перед запуском таймера
+            self.timer_running = True 
             print('started')
             self.btn_start.configure(state='disabled')
             self.btn_stop.configure(state='normal')
@@ -75,6 +76,8 @@ class App(CTk.CTk):
         self.btn_start.grid(row=2, column=1, padx=20, pady=20)
         self.btn_stop = CTk.CTkButton(self, text='Stop', command=stop_timer, state='disabled')
         self.btn_stop.grid(row=3, column=1, padx=20, pady=20)
+
+
 
 if __name__ == "__main__":
     app = App()
